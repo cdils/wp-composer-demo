@@ -150,7 +150,24 @@ jobs:
       # logging/ directory and break the site. Host-root files are therefore
       # anchored with a leading `/`. The unanchored ones (wp-config.php, .env,
       # auth.json) are intentional: those must never ship from ANY depth.
+      # Demo-friendly guard: this repo ships with no real server, so the SSH
+      # secrets are unset. Secrets are not readable inside `if:` expressions,
+      # so a tiny step maps one to env and exposes presence as an output.
+      # In a real project, delete this guard and let a missing secret fail loudly.
+      - name: Check deploy credentials
+        id: creds
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+        run: |
+          if [ -n "$SSH_HOST" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::No deploy credentials configured — demo mode, skipping rsync."
+          fi
+
       - name: Deploy via rsync
+        if: steps.creds.outputs.present == 'true'
         uses: burnett01/rsync-deployments@7.0.2
         with:
           switches: >-
