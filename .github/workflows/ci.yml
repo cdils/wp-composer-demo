@@ -1,0 +1,86 @@
+# Runs on every pull request, before anything can reach a branch that deploys.
+# Cheap, fast checks that catch the embarrassing stuff: a PHP parse error,
+# a leaked secret, a broken asset build.
+
+name: CI
+
+on:
+  pull_request:
+    branches: [develop, main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  php:
+    name: PHP
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer:v2
+          coverage: none
+
+      # A syntax error in the theme white-screens the whole site.
+      # Lint only code WE author — Composer-installed packages have their own CI.
+      - name: Lint syntax
+        run: |
+          set -euo pipefail
+          find wp-content/themes/demo-child wp-config.php index.php \
+            -name '*.php' -print0 | xargs -0 -r -n1 php -l
+
+      - name: Validate composer.json
+        run: composer validate --strict --no-check-all
+
+  assets:
+    name: JS & CSS (pnpm + webpack)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        continue-on-error: true
+        run: pnpm lint
+
+      # If the theme won't build, the deploy would fail anyway —
+      # better to find out on the PR.
+      - name: Build
+        run: pnpm build
+
+  secrets:
+    name: Secrets scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Two scanners on purpose:
+      #   TruffleHog — verifies candidate credentials against their real APIs,
+      #     so a hit means an ACTIVE credential (no noise).
+      #   Gitleaks — pure pattern matching, catches secrets TruffleHog can't
+      #     verify (salts, private keys, generic high-entropy strings).
+      - name: TruffleHog (verified secrets)
+        uses: trufflesecurity/trufflehog@main
+        with:
+          extra_args: --only-verified
+
+      - name: Gitleaks (pattern scan)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

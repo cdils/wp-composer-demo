@@ -1,0 +1,35 @@
+# Environment & credentials — never committed
+.env
+.env.*
+!.env.example
+auth.json
+*.pem
+id_rsa*
+
+# Composer-managed (rebuilt by `composer install`)
+/cms/
+/wp-content/vendor/
+/wp-content/plugins/*
+/wp-content/themes/*
+/wp-content/mu-plugins/*
+!/wp-content/plugins/index.php
+!/wp-content/themes/index.php
+!/wp-content/mu-plugins/index.php
+# Our own theme is authored here, not installed by Composer
+!/wp-content/themes/demo-child/
+
+# Built assets (rebuilt by `pnpm build`)
+/wp-content/themes/demo-child/assets/dist/
+
+# Runtime state
+/wp-content/uploads/
+/wp-content/cache/
+/wp-content/upgrade/
+*.log
+*.sql
+
+# Tooling
+node_modules/
+.DS_Store
+.idea/
+.vscode/

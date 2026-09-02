@@ -1,0 +1,45 @@
+{
+    "name": "demo/wp-composer-demo",
+    "description": "Demo: fully composerized WordPress (core in cms/, wp-content at root) with webpack + pnpm assets and CI/CD.",
+    "license": "GPL-2.0-or-later",
+    "type": "project",
+    "repositories": {
+        "wpackagist": {
+            "type": "composer",
+            "url": "https://wpackagist.org"
+        }
+    },
+    "config": {
+        "vendor-dir": "wp-content/vendor",
+        "platform": {
+            "php": "8.2"
+        },
+        "allow-plugins": {
+            "composer/installers": true,
+            "johnpbloch/wordpress-core-installer": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=8.2",
+        "johnpbloch/wordpress-core": "^6.8",
+        "johnpbloch/wordpress-core-installer": "^2.0",
+        "composer/installers": "^2.1",
+        "vlucas/phpdotenv": "^5.3",
+        "wpackagist-plugin/safe-svg": "^2.2",
+        "wpackagist-theme/twentytwentyfive": "^1.0"
+    },
+    "require-dev": {
+        "wpackagist-plugin/query-monitor": "^3.16",
+        "wpackagist-plugin/disable-emails": "^1.8"
+    },
+    "extra": {
+        "wordpress-install-dir": "cms",
+        "installer-paths": {
+            "wp-content/mu-plugins/{$name}/": ["type:wordpress-muplugin"],
+            "wp-content/plugins/{$name}/": ["type:wordpress-plugin"],
+            "wp-content/themes/{$name}/": ["type:wordpress-theme"]
+        }
+    }
+}

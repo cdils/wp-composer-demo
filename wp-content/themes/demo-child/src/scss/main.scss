@@ -1,0 +1,10 @@
+// Demo theme styles — compiled by webpack to assets/dist/css/style.css.
+$accent: #0f766e;
+
+.demo-child-ready {
+	--demo-accent: #{$accent};
+}
+
+a {
+	color: var( --demo-accent, $accent );
+}

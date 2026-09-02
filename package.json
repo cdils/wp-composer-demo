@@ -1,0 +1,35 @@
+{
+  "name": "wp-composer-demo",
+  "version": "1.0.0",
+  "description": "Webpack asset pipeline for the demo-child theme. pnpm only.",
+  "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  },
+  "scripts": {
+    "build": "webpack --mode=production",
+    "dev": "webpack --mode=development --watch",
+    "lint:js": "eslint 'wp-content/themes/demo-child/src/js/**/*.js'",
+    "lint:css": "stylelint 'wp-content/themes/demo-child/src/scss/**/*.scss' --custom-syntax postcss-scss",
+    "lint": "npm-run-all lint:js lint:css"
+  },
+  "devDependencies": {
+    "@wordpress/eslint-plugin": "^21.0.0",
+    "css-loader": "^7.1.2",
+    "css-minimizer-webpack-plugin": "^7.0.0",
+    "eslint": "^8.57.0",
+    "mini-css-extract-plugin": "^2.9.0",
+    "npm-run-all": "^4.1.5",
+    "postcss-scss": "^4.0.9",
+    "sass": "^1.77.0",
+    "sass-loader": "^16.0.0",
+    "stylelint": "^16.6.0",
+    "stylelint-scss": "^6.3.0",
+    "terser-webpack-plugin": "^5.3.10",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-remove-empty-scripts": "^1.0.4"
+  }
+}

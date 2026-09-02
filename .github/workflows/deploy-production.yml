@@ -1,0 +1,26 @@
+# Production: `main` only.
+#
+# `environment: production` is passed as an input to the shared pipeline, so
+# the environment GitHub gates on and the secrets actually used cannot
+# disagree. Put required reviewers / a wait timer on the `production`
+# environment in repo settings and they genuinely apply.
+
+name: Deploy production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy.yml
+    with:
+      environment: production
+      url: https://www.example.com
+    secrets:
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_PATH: ${{ secrets.SSH_PATH }}
+      SSH_PORT: ${{ secrets.SSH_PORT }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
