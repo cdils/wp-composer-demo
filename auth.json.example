@@ -1,0 +1,19 @@
+{
+    "http-basic": {
+        "composer.deliciousbrains.com": {
+            "username": "{WP_MIGRATE_USERNAME}",
+            "password": "{WP_MIGRATE_PASSWORD}"
+        },
+        "my.yoast.com": {
+            "username": "{MYYOAST_TOKEN_ID}",
+            "password": "{MYYOAST_TOKEN_SECRET}"
+        },
+        "composer.gravity.io": {
+            "username": "{GRAVITY_LICENSE_KEY}",
+            "password": "{GRAVITY_SITE_URL}"
+        }
+    },
+    "github-oauth": {
+        "github.com": "{GITHUB_PERSONAL_ACCESS_TOKEN}"
+    }
+}

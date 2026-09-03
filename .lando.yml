@@ -1,0 +1,32 @@
+name: wp-composer-demo
+recipe: wordpress
+config:
+  webroot: .
+  php: '8.2'
+  composer_version: '2'
+  database: mysql
+  xdebug: false
+  via: nginx
+
+proxy:
+  mailhog:
+    - mail.wp-composer-demo.lndo.site
+
+services:
+  node:
+    type: node:20
+
+  mailhog:
+    type: mailhog
+    hogfrom:
+      - appserver
+
+tooling:
+  node:
+    service: node
+  pnpm:
+    service: node
+    description: Run pnpm (installed via corepack)
+    cmd: corepack pnpm
+  npx:
+    service: node
